@@ -1,0 +1,22 @@
+{
+    "name": "roadie-xx/rest-api",
+    "description": "Simple Restfull API Framework.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Robby van Zweeden"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "RoadieXX\\": "src",
+            "Test\\RoadieXX\\": "tests"
+        }
+    },
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*"
+    }
+}

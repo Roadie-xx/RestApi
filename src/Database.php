@@ -14,7 +14,10 @@ defined('DATABASE_PASS') or define('DATABASE_PASS', getenv('DATABASE_PASS'));
 
 class Database extends PDO
 {
-    public function __construct($options = [])
+    /**
+     * @param array<string, string> $options
+     */
+    public function __construct(array $options = [])
     {
         $defaultOptions = [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -27,7 +30,10 @@ class Database extends PDO
         parent::__construct(DATABASE_DSN, DATABASE_USER, DATABASE_PASS, $options);
     }
 
-    public function findAll($sql): array
+    /**
+     * @return array<int, array<string, string>>|array<string, string>
+     */
+    public function findAll(string $sql): array
     {
         try {
             $statement = $this->query($sql);
@@ -38,7 +44,11 @@ class Database extends PDO
         }
     }
 
-    public function find($sql, $params): array
+    /**
+     * @param array<string, string> $params
+     * @return array<string, string>
+     */
+    public function find(string $sql, array $params): array
     {
         try {
             $statement = $this->prepare($sql);
@@ -51,7 +61,11 @@ class Database extends PDO
         }
     }
 
-    public function insert($sql, $params = [])
+    /**
+     * @param array<string, string> $params
+     * @return int|array<string, string>
+     */
+    public function insert(string $sql, array $params)
     {
         try {
             $statement = $this->prepare($sql);
@@ -64,7 +78,11 @@ class Database extends PDO
         }
     }
 
-    public function update($sql, $params = [])
+    /**
+     * @param array<string, string> $params
+     * @return int|array<string, string>
+     */
+    public function update(string $sql, array $params)
     {
         try {
             $statement = $this->prepare($sql);
@@ -77,12 +95,15 @@ class Database extends PDO
         }
     }
 
-    public function run($sql, $args = []): mixed
+    /**
+     * @param array<string, string> $params
+     */
+    public function run(string $sql, ?array $params = []): mixed
     {
         try {
             $stmt = $this->prepare($sql);
 
-            $stmt->execute($args);
+            $stmt->execute($params);
 
             return $stmt->fetchAll();
         } catch (PDOException $error) {
@@ -90,6 +111,9 @@ class Database extends PDO
         }
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function returnError(PDOException $error): array
     {
         http_response_code(500);

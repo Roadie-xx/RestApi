@@ -17,7 +17,7 @@ class RestApi
         $this->database = $database;
     }
 
-    public function execute(?string $id = null)
+    public function execute(?string $id = null): void
     {
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET': // Show record(s)
@@ -47,6 +47,9 @@ class RestApi
         echo json_encode($data);
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     private function findAll(): array
     {
         $sql = sprintf('SELECT * FROM %s', $this->table);
@@ -54,6 +57,9 @@ class RestApi
         return $this->database->findAll($sql);
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function find(string $id): array
     {
         $sql = sprintf('SELECT * FROM %s WHERE id = :id', $this->table);
@@ -83,6 +89,9 @@ class RestApi
         return $this->database->insert($sql, $data);
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function parseInput(): array
     {
         parse_str(file_get_contents("php://input"), $data);

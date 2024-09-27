@@ -23,11 +23,11 @@ class Database extends PDO
         ];
 
         $options = array_replace($defaultOptions, $options);
-        
+
         parent::__construct(DATABASE_DSN, DATABASE_USER, DATABASE_PASS, $options);
     }
 
-    public function findAll($sql): array 
+    public function findAll($sql): array
     {
         try {
             $statement = $this->query($sql);
@@ -35,20 +35,20 @@ class Database extends PDO
             return $statement->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
             return $this->returnError($error);
-        }   
+        }
     }
 
-    public function find($sql, $params): array 
+    public function find($sql, $params): array
     {
         try {
             $statement = $this->prepare($sql);
-            
+
             $statement->execute($params);
 
             return $statement->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
             return $this->returnError($error);
-        }   
+        }
     }
 
     public function insert($sql, $params = []): int
@@ -61,7 +61,7 @@ class Database extends PDO
             return $statement->rowCount();
         } catch (PDOException $error) {
             return $this->returnError($error);
-        }   
+        }
     }
 
     public function update($sql, $params = []): int
@@ -74,7 +74,7 @@ class Database extends PDO
             return $statement->rowCount();
         } catch (PDOException $error) {
             return $this->returnError($error);
-        }   
+        }
     }
 
     public function run($sql, $args = []): mixed
@@ -92,7 +92,7 @@ class Database extends PDO
 
     private function returnError(PDOException $error): array
     {
-        http_response_code(500); 
+        http_response_code(500);
 
         return [
             'status' => 'error',

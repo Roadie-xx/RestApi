@@ -6,7 +6,8 @@ namespace RoadieXX;
 
 use RoadieXX\Database;
 
-class RestApi {
+class RestApi
+{
     private string $table;
 
     public function __construct(string $table, Database $database)
@@ -19,16 +20,16 @@ class RestApi {
     {
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET': // Show record(s)
-                $data = $id === null ? $this->findAll(): $this->find($id);
+                $data = $id === null ? $this->findAll() : $this->find($id);
                 break;
 
             case 'POST': // Used for new records
                 $data = $this->post();
                 break;
 
-            // case 'PUT': // Replace record
-            //     $data = $this->put();
-            //     break;
+                // case 'PUT': // Replace record
+                //     $data = $this->put();
+                //     break;
 
             case 'PATCH': // Update some fields in a record
                 $data = $this->patch($id);
@@ -38,8 +39,8 @@ class RestApi {
                 http_response_code(400); //Bad Request
                 $data = [
                     'error' => 'Unknown REQUEST_METHOD',
-                ];                
-            }
+                ];
+        }
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -59,11 +60,11 @@ class RestApi {
         return $this->database->find($sql, ['id' => $id]);
     }
 
-    private function patch(int $id): array 
+    private function patch(int $id): array
     {
-        $data = $this->parseInput($data);
-        
-        $parts = array_map(fn(string $key): string => "$key = :$key", array_keys($data));
+        $data = $this->parseInput();
+
+        $parts = array_map(fn (string $key): string => "$key = :$key", array_keys($data));
 
         $sql = sprintf('UPDATE %s SET %s WHERE id = %d', $this->table, implode(', ', $parts), $id);
 
@@ -72,19 +73,19 @@ class RestApi {
 
     private function post(): array
     {
-        $data = $this->parseInput($data);
-        
-        $parts = array_map(fn(string $key): string => "$key = :$key", array_keys($data));
+        $data = $this->parseInput();
+
+        $parts = array_map(fn (string $key): string => "$key = :$key", array_keys($data));
 
         $sql = sprintf('INSERT INTO %s SET %s', $this->table, implode(', ', $parts));
 
         return $this->database->insert($sql, $data);
     }
 
-    private function parseInput($data): array
+    private function parseInput(): array
     {
         parse_str(file_get_contents("php://input"), $data);
-        
+
         return $data;
     }
 }

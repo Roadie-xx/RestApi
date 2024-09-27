@@ -85,8 +85,8 @@ class Database extends PDO
             $stmt->execute($args);
 
             return $stmt->fetchAll();
-        } catch(PDOException $e) {
-            return $this->error($e->getMessage());
+        } catch (PDOException $error) {
+            return $this->returnError($error);
         }
     }
 

@@ -8,6 +8,7 @@ use RoadieXX\Database;
 
 class RestApi
 {
+    private Database $database;
     private string $table;
 
     public function __construct(string $table, Database $database)

@@ -48,9 +48,9 @@ class RestApi
     }
 
     /**
-     * @return array<int, array<string, string>>
+     * @return array<int|string, array<string, string>|string>|false
      */
-    private function findAll(): array
+    private function findAll()
     {
         $sql = sprintf('SELECT * FROM %s', $this->table);
 
@@ -67,22 +67,28 @@ class RestApi
         return $this->database->find($sql, ['id' => $id]);
     }
 
-    private function patch(?string $id): int
+    /**
+     * @return array<string, string>|int
+     */
+    private function patch(?string $id)
     {
         $data = $this->parseInput();
 
-        $parts = array_map(fn (string $key): string => "$key = :$key", array_keys($data));
+        $parts = array_map(fn ($key): string => "$key = :$key", array_keys($data));
 
         $sql = sprintf('UPDATE %s SET %s WHERE id = %d', $this->table, implode(', ', $parts), $id);
 
         return $this->database->update($sql, $data);
     }
 
-    private function post(): int
+    /**
+     * @return array<string, string>|int
+     */
+    private function post()
     {
         $data = $this->parseInput();
 
-        $parts = array_map(fn (string $key): string => "$key = :$key", array_keys($data));
+        $parts = array_map(fn ($key): string => "$key = :$key", array_keys($data));
 
         $sql = sprintf('INSERT INTO %s SET %s', $this->table, implode(', ', $parts));
 
@@ -90,11 +96,13 @@ class RestApi
     }
 
     /**
-     * @return array<string, string>
+     * @return array<int|string, array|string>
      */
     private function parseInput(): array
     {
-        parse_str(file_get_contents("php://input"), $data);
+        $content = file_get_contents("php://input") ?: '';
+
+        parse_str($content, $data);
 
         return $data;
     }

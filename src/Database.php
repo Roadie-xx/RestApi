@@ -27,16 +27,25 @@ class Database extends PDO
 
         $options = array_replace($defaultOptions, $options);
 
+
+        if (DATABASE_DSN === false || DATABASE_USER === false || DATABASE_PASS === false) {
+            die('Missing database credentials');
+        }
+
         parent::__construct(DATABASE_DSN, DATABASE_USER, DATABASE_PASS, $options);
     }
 
     /**
-     * @return array<int, array<string, string>>|array<string, string>
+     * @return false|array<int, array<string, string>>|array<string, string>
      */
-    public function findAll(string $sql): array
+    public function findAll(string $sql)
     {
         try {
             $statement = $this->query($sql);
+
+            if ($statement === false) {
+                throw new PDOException('Could not query');
+            }
 
             return $statement->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
@@ -62,7 +71,7 @@ class Database extends PDO
     }
 
     /**
-     * @param array<string, string> $params
+     * @param array<string|int, string> $params
      * @return int|array<string, string>
      */
     public function insert(string $sql, array $params)
@@ -79,7 +88,7 @@ class Database extends PDO
     }
 
     /**
-     * @param array<string, string> $params
+     * @param array<string|int, string> $params
      * @return int|array<string, string>
      */
     public function update(string $sql, array $params)

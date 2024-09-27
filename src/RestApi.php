@@ -61,7 +61,7 @@ class RestApi
         return $this->database->find($sql, ['id' => $id]);
     }
 
-    private function patch(int $id): int
+    private function patch(?string $id): int
     {
         $data = $this->parseInput();
 

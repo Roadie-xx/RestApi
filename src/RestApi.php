@@ -61,7 +61,7 @@ class RestApi
         return $this->database->find($sql, ['id' => $id]);
     }
 
-    private function patch(int $id): array
+    private function patch(int $id): int
     {
         $data = $this->parseInput();
 
@@ -72,7 +72,7 @@ class RestApi
         return $this->database->update($sql, $data);
     }
 
-    private function post(): array
+    private function post(): int
     {
         $data = $this->parseInput();
 

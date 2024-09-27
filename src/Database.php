@@ -51,7 +51,7 @@ class Database extends PDO
         }
     }
 
-    public function insert($sql, $params = []): int
+    public function insert($sql, $params = [])
     {
         try {
             $statement = $this->prepare($sql);
@@ -64,7 +64,7 @@ class Database extends PDO
         }
     }
 
-    public function update($sql, $params = []): int
+    public function update($sql, $params = [])
     {
         try {
             $statement = $this->prepare($sql);

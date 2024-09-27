@@ -7,18 +7,19 @@ namespace RoadieXX;
 use RoadieXX\Database;
 
 class RestApi {
+    private string $table;
+
     public function __construct(string $table, Database $database)
     {
         $this->table = $table;
         $this->database = $database;
     }
 
-    public function execute()
+    public function execute(?string $id = null)
     {
-
         switch ($_SERVER['REQUEST_METHOD']) {
-            case 'GET':
-                $data = isset($_GET['id']) ? $this->fetchById($_GET['id']) : $this->fetchAll();
+            case 'GET': // Show record(s)
+                $data = $id === null ? $this->findAll(): $this->find($id);
                 break;
 
             case 'POST': // Used for new records
@@ -30,13 +31,12 @@ class RestApi {
             //     break;
 
             case 'PATCH': // Update some fields in a record
-                $data = $this->patch($_GET['id']);
+                $data = $this->patch($id);
                 break;
 
             default:
                 http_response_code(400); //Bad Request
                 $data = [
-                    
                     'error' => 'Unknown REQUEST_METHOD',
                 ];                
             }
@@ -45,20 +45,18 @@ class RestApi {
         echo json_encode($data);
     }
 
-
-
-    private function fetchAll(): array
+    private function findAll(): array
     {
         $sql = sprintf('SELECT * FROM %s', $this->table);
 
-        return $this->database->run($sql);
+        return $this->database->findAll($sql);
     }
 
-    private function fetchById(string $id): array
+    private function find(string $id): array
     {
         $sql = sprintf('SELECT * FROM %s WHERE id = :id', $this->table);
 
-        return $this->database->run($sql, ['id' => $id]);
+        return $this->database->find($sql, ['id' => $id]);
     }
 
     private function patch(int $id): array 
@@ -69,8 +67,7 @@ class RestApi {
 
         $sql = sprintf('UPDATE %s SET %s WHERE id = %d', $this->table, implode(', ', $parts), $id);
 
-        return $this->database->run($sql, $data);
-
+        return $this->database->update($sql, $data);
     }
 
     private function post(): array
@@ -79,10 +76,9 @@ class RestApi {
         
         $parts = array_map(fn(string $key): string => "$key = :$key", array_keys($data));
 
-        $sql = sprintf('UPDATE %s SET %s', $this->table, implode(', ', $parts));
+        $sql = sprintf('INSERT INTO %s SET %s', $this->table, implode(', ', $parts));
 
-        return $this->database->run($sql, $data);
-
+        return $this->database->insert($sql, $data);
     }
 
     private function parseInput($data): array

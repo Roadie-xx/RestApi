@@ -31,6 +31,7 @@ interface DatabaseInterface
 
     /**
      * @param array<string, string> $params
+     * @return int|array<string, string>
      */
-    public function run(string $sql, ?array $params = []): mixed;
+    public function run(string $sql, ?array $params = []);
 }

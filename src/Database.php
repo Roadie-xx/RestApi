@@ -12,7 +12,7 @@ defined('DATABASE_DSN') or define('DATABASE_DSN', getenv('DATABASE_DSN')); // my
 defined('DATABASE_USER') or define('DATABASE_USER', getenv('DATABASE_USER'));
 defined('DATABASE_PASS') or define('DATABASE_PASS', getenv('DATABASE_PASS'));
 
-class Database extends PDO
+class Database extends PDO implements DatabaseInterface
 {
     /**
      * @param array<string, string> $options

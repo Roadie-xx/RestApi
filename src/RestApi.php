@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace RoadieXX;
 
-use RoadieXX\Database;
+use RoadieXX\DatabaseInterface;
 
 class RestApi
 {
-    private Database $database;
+    private DatabaseInterface $database;
     private string $table;
 
-    public function __construct(string $table, Database $database)
+    public function __construct(string $table, DatabaseInterface $database)
     {
         $this->table = $table;
         $this->database = $database;

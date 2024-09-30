@@ -117,7 +117,7 @@ class Database extends PDO implements DatabaseInterface
 
     /**
      * @param array<string, string> $params
-     * @return int|array<string, string>
+     * @return false|int|array<int, array<string, string>>|array<string, string>
      */
     public function run(string $sql, ?array $params = [])
     {

@@ -18,13 +18,13 @@ interface DatabaseInterface
     public function find(string $sql, array $params): array;
 
     /**
-     * @param array<string|int, string> $params
+     * @param array<int|string, array<int, mixed>|string> $params
      * @return int|array<string, string>
      */
     public function insert(string $sql, array $params);
 
     /**
-     * @param array<string|int, string> $params
+     * @param array<int|string, array<int, mixed>|string> $params
      * @return int|array<string, string>
      */
     public function update(string $sql, array $params);

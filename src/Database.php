@@ -17,15 +17,15 @@ class Database extends PDO implements DatabaseInterface
 {
     private ?PDO $pdo = null;
 
-    /**
-     * @param array<string, string> $options
-     */
     public function __construct()
     {
 
     }
 
-    public function setPdo(?PDO $pdo = null, array $options = [])
+    /**
+     * @param array<string, string> $options
+     */
+    public function setPdo(?PDO $pdo = null, array $options = []): void
     {
         if ($pdo === null) {
             $defaultOptions = [

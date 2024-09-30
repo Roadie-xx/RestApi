@@ -96,7 +96,7 @@ class RestApi
     }
 
     /**
-     * @return array<int|string, array|string>
+     * @return array<int|string, array<int, mixed>|string>
      */
     private function parseInput(): array
     {

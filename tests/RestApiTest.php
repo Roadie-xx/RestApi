@@ -17,7 +17,7 @@ class RestApiTest extends TestCase
 {
     use PrivatePropertyTrait;
 
-    public function testConstruction() {
+    public function testConstruction(): void {
         $database = $this->getMockBuilder(Database::class)->disableOriginalConstructor()->getMock();
 
         $api = new RestApi('table_name', $database);
@@ -28,7 +28,7 @@ class RestApiTest extends TestCase
         $this->assertSame($this->getPrivateProperty($api, 'database'), $database);
     }
 
-    public function testExecuteWithUnknownRequestMethod() {
+    public function testExecuteWithUnknownRequestMethod(): void {
         $database = $this->getMockBuilder(Database::class)->disableOriginalConstructor()->getMock();
 
         $api = new RestApi('table_name', $database);
@@ -40,7 +40,7 @@ class RestApiTest extends TestCase
         $api->execute();
     }
 
-    public function testExecuteWithGetNoId() {
+    public function testExecuteWithGetNoId(): void {
         $expectedResult = [
             ['id' => 1, 'name' => 'First Item'],
             ['id' => 2, 'name' => 'Second Item'],
@@ -63,7 +63,7 @@ class RestApiTest extends TestCase
         $api->execute();
     }
 
-    public function testExecuteWithGetAndId() {
+    public function testExecuteWithGetAndId(): void {
         $expectedResult = ['id' => 2, 'name' => 'Second Item'];
 
         $database = $this->getMockBuilder(Database::class)->disableOriginalConstructor()->getMock();
@@ -83,7 +83,7 @@ class RestApiTest extends TestCase
         $api->execute('2');
     }
 
-    public function testExecuteWithPatch() {
+    public function testExecuteWithPatch(): void {
         $expectedResult = 1;
 
         $_ENV['PHPUNIT_RESPONSE_FILE_GET_CONTENTS'] = 'name=New Name&company=Unknown';
@@ -110,7 +110,7 @@ class RestApiTest extends TestCase
         $api->execute('23');
     }
 
-    public function testExecuteWithPost() {
+    public function testExecuteWithPost(): void {
         $expectedResult = 1;
 
         $_ENV['PHPUNIT_RESPONSE_FILE_GET_CONTENTS'] = 'name=New Name&company=New Company';
@@ -137,7 +137,7 @@ class RestApiTest extends TestCase
         $api->execute();
     }
 
-    public function testFindAll() {
+    public function testFindAll(): void {
         $expectedResult = [
             ['id' => 1, 'name' => 'First Item'],
             ['id' => 2, 'name' => 'Second Item'],
@@ -155,7 +155,7 @@ class RestApiTest extends TestCase
         $this->assertSame($this->invokePrivateMethod($api, 'findAll'), $expectedResult);
     }
 
-    public function testFind() {
+    public function testFind(): void {
         $expectedResult = ['id' => 1, 'name' => 'First Item'];
 
         $database = $this->getMockBuilder(Database::class)->disableOriginalConstructor()->getMock();
@@ -170,7 +170,7 @@ class RestApiTest extends TestCase
         $this->assertSame($this->invokePrivateMethod($api, 'find', ['1']), $expectedResult);
     }
 
-    public function testPatch() {
+    public function testPatch(): void {
         $expectedResult = 1;
 
         $_ENV['PHPUNIT_RESPONSE_FILE_GET_CONTENTS'] = 'name=Test Name&company=Unknown';
@@ -193,7 +193,7 @@ class RestApiTest extends TestCase
         $this->assertSame($this->invokePrivateMethod($api, 'patch', ['23']), $expectedResult);
     }
 
-    public function testInsert() {
+    public function testInsert(): void {
         $expectedResult = 1;
 
         $_ENV['PHPUNIT_RESPONSE_FILE_GET_CONTENTS'] = 'name=Test Name&company=Known Company';

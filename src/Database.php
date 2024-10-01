@@ -17,11 +17,6 @@ class Database implements DatabaseInterface
 {
     private ?PDO $pdo = null;
 
-    public function __construct()
-    {
-
-    }
-
     /**
      * @param array<string, string> $options
      */

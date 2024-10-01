@@ -34,4 +34,11 @@ docker run -ti -v ${pwd}:/var/www/composer ghcr.io/devgine/composer-php:v2-php7.
     # PHP Unit
     simple-phpunit --bootstrap=vendor/autoload.php ./tests
     simple-phpunit --coverage-text --whitelist=./src  --bootstrap=vendor/autoload.php ./tests
+
+    # Rector
+    rector #first run will create rector.php in root as config file
+    ## To see preview of suggested changed
+    rector process --dry-run
+    ## To make changes happen
+    rector process
 ```

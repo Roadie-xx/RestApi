@@ -30,7 +30,7 @@ class DatabaseTest extends TestCase
         }
     }
 
-    public function testConstructor() {
+    public function testConstructor(): void {
         $database = new Database();
 
         $this->assertInstanceOf(Database::class, $database);
@@ -38,7 +38,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($this->getPrivateProperty($database, 'pdo'), null);
     }
 
-    public function testSetPdoWithPDO() {
+    public function testSetPdoWithPDO(): void {
         $pdoMock = new PDOMock();
         $database = new Database();
         $database->setPdo($pdoMock);
@@ -48,7 +48,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($this->getPrivateProperty($database, 'pdo'), $pdoMock);
     }
 
-    public function testSetPdoNoCredentials() {
+    public function testSetPdoNoCredentials(): void {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Missing database credentials');
 
@@ -59,7 +59,7 @@ class DatabaseTest extends TestCase
     /**
     * @runInSeparateProcess
     */
-    public function testSetPdo() {
+    public function testSetPdo(): void {
         define('DATABASE_DSN', 'sqlite:example.db');
         define('DATABASE_USER', '');
         define('DATABASE_PASS', '');
@@ -72,7 +72,7 @@ class DatabaseTest extends TestCase
         $this->assertInstanceOf(PDO::class, $this->getPrivateProperty($database, 'pdo'));
     }
 
-    public function testFindAll() {
+    public function testFindAll(): void {
         $query = 'SELECT * FROM table_a';
         $expected = [
             ['id' => 1, 'name' => 'First Item'],
@@ -101,7 +101,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testFindAllFailed() {
+    public function testFindAllFailed(): void {
         $query = 'SELECT * FROM table_a';
         $expected = [
             'status' => 'error',
@@ -125,7 +125,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testFind() {
+    public function testFind(): void {
         $query = 'SELECT * FROM table_a WHERE id = 34';
         $expected = ['id' => 34, 'name' => 'Second Item'];
 
@@ -156,7 +156,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testFindFailed() {
+    public function testFindFailed(): void {
         $query = 'SELECT * FROM table_a WHERE id = 45';
         $expected = [
             'status' => 'error',
@@ -180,7 +180,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testFindNoArrayResult() {
+    public function testFindNoArrayResult(): void {
         $query = 'SELECT * FROM table_a WHERE id = 45';
         $expected = [
             'status' => 'error',
@@ -216,7 +216,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testInsert() {
+    public function testInsert(): void {
         $query = 'INSERT INTO table_a SET id = :id, name = :name';
         $params = ['id' => 34, 'name' => 'Second Item'];
         $expected = 1;
@@ -247,7 +247,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testInsertFailed() {
+    public function testInsertFailed(): void {
         $query = 'INSERT INTO table_a SET id = :id, name = :name';
         $params = ['id' => 34, 'name' => 'Second Item'];
         $expected = [
@@ -272,7 +272,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testUpdate() {
+    public function testUpdate(): void {
         $query = 'UPDATE table_a SET name = :name WHERE id = :id';
         $params = ['id' => 69, 'name' => 'Second Item'];
         $expected = 1;
@@ -303,7 +303,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testUpdateFailed() {
+    public function testUpdateFailed(): void {
         $query = 'UPDATE table_a SET name = :name WHERE id = :id';
         $params = ['id' => 34, 'name' => 'Second Item'];
         $expected = [
@@ -328,7 +328,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testRun() {
+    public function testRun(): void {
         $query = 'SHOW TABLES';
         $params = [];
         $expected = [['Test table']];
@@ -358,7 +358,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testRunFailed() {
+    public function testRunFailed(): void {
         $query = 'SHOW TABLES';
         $params = [];
         $expected = [
@@ -383,7 +383,7 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testCheckConnected() {
+    public function testCheckConnected(): void {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Not connected to a PDO source');
 

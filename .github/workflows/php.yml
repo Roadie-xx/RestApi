@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ghcr.io/devgine/composer-php:latest
+      image: ghcr.io/devgine/composer-php:v2-php7.4-alpine
     
     steps:
     - uses: actions/checkout@v4

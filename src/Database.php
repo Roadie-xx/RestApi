@@ -83,7 +83,13 @@ class Database implements DatabaseInterface
 
             $statement->execute($params);
 
-            return $statement->fetch(PDO::FETCH_ASSOC);
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            if (! is_array($result)) {
+                throw new PDOException('Could not fetch');
+            }
+
+            return $result;
         } catch (PDOException $error) {
             return $this->returnError($error);
         }

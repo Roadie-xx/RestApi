@@ -13,7 +13,7 @@ defined('DATABASE_DSN') or define('DATABASE_DSN', getenv('DATABASE_DSN')); // my
 defined('DATABASE_USER') or define('DATABASE_USER', getenv('DATABASE_USER'));
 defined('DATABASE_PASS') or define('DATABASE_PASS', getenv('DATABASE_PASS'));
 
-class Database extends PDO implements DatabaseInterface
+class Database implements DatabaseInterface
 {
     private ?PDO $pdo = null;
 
@@ -52,6 +52,10 @@ class Database extends PDO implements DatabaseInterface
     public function findAll(string $sql)
     {
         try {
+            $this->checkConnected();
+
+            // Cannot call method query() on PDO|null: Caught by $this->checkConnected(); 
+            // @phpstan-ignore method.nonObject
             $statement = $this->pdo->query($sql);
 
             if ($statement === false) {
@@ -71,6 +75,10 @@ class Database extends PDO implements DatabaseInterface
     public function find(string $sql, array $params): array
     {
         try {
+            $this->checkConnected();
+
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // @phpstan-ignore method.nonObject
             $statement = $this->pdo->prepare($sql);
 
             $statement->execute($params);
@@ -88,6 +96,10 @@ class Database extends PDO implements DatabaseInterface
     public function insert(string $sql, array $params)
     {
         try {
+            $this->checkConnected();
+
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // @phpstan-ignore method.nonObject
             $statement = $this->pdo->prepare($sql);
 
             $statement->execute($params);
@@ -105,6 +117,10 @@ class Database extends PDO implements DatabaseInterface
     public function update(string $sql, array $params)
     {
         try {
+            $this->checkConnected();
+
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // @phpstan-ignore method.nonObject
             $statement = $this->pdo->prepare($sql);
 
             $statement->execute($params);
@@ -122,11 +138,15 @@ class Database extends PDO implements DatabaseInterface
     public function run(string $sql, ?array $params = [])
     {
         try {
-            $stmt = $this->pdo->prepare($sql);
+            $this->checkConnected();
 
-            $stmt->execute($params);
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // @phpstan-ignore method.nonObject
+            $statement = $this->pdo->prepare($sql);
 
-            return $stmt->fetchAll();
+            $statement->execute($params);
+
+            return $statement->fetchAll();
         } catch (PDOException $error) {
             return $this->returnError($error);
         }
@@ -143,5 +163,12 @@ class Database extends PDO implements DatabaseInterface
             'status' => 'error',
             'message' => $error->getMessage(),
         ];
+    }
+
+    private function checkConnected(): void
+    {
+        if ($this->pdo === null) {
+            throw new PDOException('Not connected to a PDO source');
+        }
     }
 }

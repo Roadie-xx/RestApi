@@ -14,6 +14,9 @@ docker run -ti -v LOCAL_PROJECT_DIR:/var/www/composer ghcr.io/devgine/composer-p
 # For  example
 docker run -ti -v ${pwd}:/var/www/composer ghcr.io/devgine/composer-php:v2-php7.4-alpine sh
 
+# Updrade global packages in docker
+    composer global upgrade
+
 # Install packages
     composer install
 

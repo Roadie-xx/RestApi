@@ -54,7 +54,7 @@ class Database implements DatabaseInterface
         try {
             $this->checkConnected();
 
-            // Cannot call method query() on PDO|null: Caught by $this->checkConnected(); 
+            // Cannot call method query() on PDO|null: Caught by $this->checkConnected();
             // @phpstan-ignore method.nonObject
             $statement = $this->pdo->query($sql);
 
@@ -77,7 +77,7 @@ class Database implements DatabaseInterface
         try {
             $this->checkConnected();
 
-            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected();
             // @phpstan-ignore method.nonObject
             $statement = $this->pdo->prepare($sql);
 
@@ -104,7 +104,7 @@ class Database implements DatabaseInterface
         try {
             $this->checkConnected();
 
-            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected();
             // @phpstan-ignore method.nonObject
             $statement = $this->pdo->prepare($sql);
 
@@ -125,7 +125,7 @@ class Database implements DatabaseInterface
         try {
             $this->checkConnected();
 
-            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected();
             // @phpstan-ignore method.nonObject
             $statement = $this->pdo->prepare($sql);
 
@@ -146,7 +146,7 @@ class Database implements DatabaseInterface
         try {
             $this->checkConnected();
 
-            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected(); 
+            // Cannot call method prepare() on PDO|null: Caught by $this->checkConnected();
             // @phpstan-ignore method.nonObject
             $statement = $this->pdo->prepare($sql);
 

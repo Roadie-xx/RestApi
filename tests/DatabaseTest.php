@@ -12,9 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Helpers/PrivatePropertyTrait.php';
 
-class PDOMock extends \PDO { 
-	public function __construct() {} 
-} 
+class PDOMock extends \PDO {
+	public function __construct() {}
+}
 
 /**
  * @coversDefaultClass \RoadieXX\RestApi
@@ -32,9 +32,9 @@ class DatabaseTest extends TestCase
 
     public function testConstructor() {
         $database = new Database();
-        
+
         $this->assertInstanceOf(Database::class, $database);
-        
+
         $this->assertSame($this->getPrivateProperty($database, 'pdo'), null);
     }
 
@@ -44,7 +44,7 @@ class DatabaseTest extends TestCase
         $database->setPdo($pdoMock);
 
         $this->assertInstanceOf(Database::class, $database);
-        
+
         $this->assertSame($this->getPrivateProperty($database, 'pdo'), $pdoMock);
     }
 
@@ -68,7 +68,7 @@ class DatabaseTest extends TestCase
         $database->setPdo();
 
         $this->assertInstanceOf(Database::class, $database);
-        
+
         $this->assertInstanceOf(PDO::class, $this->getPrivateProperty($database, 'pdo'));
     }
 
@@ -79,14 +79,14 @@ class DatabaseTest extends TestCase
             ['id' => 2, 'name' => 'Second Item'],
         ];
 
-        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock(); 
+        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $pdoStatementMock
             ->expects($this->once())
             ->method('fetchAll')
             ->with(PDO::FETCH_ASSOC)
             ->willReturn($expected);
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('query')
@@ -95,7 +95,7 @@ class DatabaseTest extends TestCase
 
         $database = new Database();
         $database->setPdo($pdoMock);
-        
+
         $actual = $database->findAll($query);
 
         $this->assertSame($expected, $actual);
@@ -108,7 +108,7 @@ class DatabaseTest extends TestCase
             'message' => 'Could not query',
         ];
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('query')
@@ -129,7 +129,7 @@ class DatabaseTest extends TestCase
         $query = 'SELECT * FROM table_a WHERE id = 34';
         $expected = ['id' => 34, 'name' => 'Second Item'];
 
-        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock(); 
+        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $pdoStatementMock
             ->expects($this->once())
             ->method('execute')
@@ -141,7 +141,7 @@ class DatabaseTest extends TestCase
             ->with(PDO::FETCH_ASSOC)
             ->willReturn($expected);
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -150,7 +150,7 @@ class DatabaseTest extends TestCase
 
         $database = new Database();
         $database->setPdo($pdoMock);
-        
+
         $actual = $database->find($query, ['id' => '34']);
 
         $this->assertSame($expected, $actual);
@@ -163,7 +163,7 @@ class DatabaseTest extends TestCase
             'message' => 'Could not execute',
         ];
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -180,12 +180,48 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    public function testFindNoArrayResult() {
+        $query = 'SELECT * FROM table_a WHERE id = 45';
+        $expected = [
+            'status' => 'error',
+            'message' => 'Could not fetch',
+        ];
+
+        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $pdoStatementMock
+            ->expects($this->once())
+            ->method('execute')
+            ->with(['id' => '56'])
+            ->willReturn($expected);
+        $pdoStatementMock
+            ->expects($this->once())
+            ->method('fetch')
+            ->with(PDO::FETCH_ASSOC)
+            ->willReturn(false);
+
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
+        $pdoMock
+            ->expects($this->once())
+            ->method('prepare')
+            ->with($query)
+            ->willReturn($pdoStatementMock);
+
+        $database = new Database();
+        $database->setPdo($pdoMock);
+
+        $this->expectOutputString("http_response_code = 500\n");
+
+        $actual = $database->find($query,  ['id' => '56']);
+
+        $this->assertSame($expected, $actual);
+    }
+
     public function testInsert() {
         $query = 'INSERT INTO table_a SET id = :id, name = :name';
         $params = ['id' => 34, 'name' => 'Second Item'];
         $expected = 1;
 
-        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock(); 
+        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $pdoStatementMock
             ->expects($this->once())
             ->method('execute')
@@ -196,7 +232,7 @@ class DatabaseTest extends TestCase
             ->method('rowCount')
             ->willReturn($expected);
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -205,7 +241,7 @@ class DatabaseTest extends TestCase
 
         $database = new Database();
         $database->setPdo($pdoMock);
-        
+
         $actual = $database->insert($query, $params);
 
         $this->assertSame($expected, $actual);
@@ -219,7 +255,7 @@ class DatabaseTest extends TestCase
             'message' => 'Could not insert',
         ];
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -241,7 +277,7 @@ class DatabaseTest extends TestCase
         $params = ['id' => 69, 'name' => 'Second Item'];
         $expected = 1;
 
-        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock(); 
+        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $pdoStatementMock
             ->expects($this->once())
             ->method('execute')
@@ -252,7 +288,7 @@ class DatabaseTest extends TestCase
             ->method('rowCount')
             ->willReturn($expected);
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -261,7 +297,7 @@ class DatabaseTest extends TestCase
 
         $database = new Database();
         $database->setPdo($pdoMock);
-        
+
         $actual = $database->update($query, $params);
 
         $this->assertSame($expected, $actual);
@@ -275,7 +311,7 @@ class DatabaseTest extends TestCase
             'message' => 'Could not update',
         ];
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -292,14 +328,12 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-
-    
     public function testRun() {
         $query = 'SHOW TABLES';
         $params = [];
         $expected = [['Test table']];
 
-        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock(); 
+        $pdoStatementMock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $pdoStatementMock
             ->expects($this->once())
             ->method('execute')
@@ -309,7 +343,7 @@ class DatabaseTest extends TestCase
             ->method('fetchAll')
             ->willReturn($expected);
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -318,7 +352,7 @@ class DatabaseTest extends TestCase
 
         $database = new Database();
         $database->setPdo($pdoMock);
-        
+
         $actual = $database->run($query, $params);
 
         $this->assertSame($expected, $actual);
@@ -332,7 +366,7 @@ class DatabaseTest extends TestCase
             'message' => 'Could not run',
         ];
 
-        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock(); 
+        $pdoMock = $this->getMockBuilder(PDOMock::class)->getMock();
         $pdoMock
             ->expects($this->once())
             ->method('prepare')
@@ -349,4 +383,12 @@ class DatabaseTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    public function testCheckConnected() {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Not connected to a PDO source');
+
+        $database = new Database();
+
+        $this->invokePrivateMethod($database, 'checkConnected');
+    }
 }

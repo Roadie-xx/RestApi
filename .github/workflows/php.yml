@@ -1,0 +1,49 @@
+name: Automatic tests
+
+on:
+  push
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
+
+# permissions:
+#   contents: read
+
+jobs:
+  # build:
+  job-id:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/devgine/composer-php:latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+    
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+      
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Check duplicates
+      run: phpcpd ./src
+
+    - name: Run CSFix er
+      run: php-cs-fixer check -v ./src
+
+    - name: Run PHPStan
+      run: phpstan analyze --level=9 ./src
+
+    - name: Run Unit Tests
+      run: simple-phpunit --bootstrap=vendor/autoload.php ./tests

@@ -29,7 +29,7 @@ docker run -ti -v ${pwd}:/var/www/composer ghcr.io/devgine/composer-php:v2-php7.
     php-cs-fixer check -v --diff ./src
 
     # PHPStan
-    phpstan analyze --level=7 ./src
+    phpstan analyze --level=9 ./src
 
     # PHP Unit
     simple-phpunit --bootstrap=vendor/autoload.php ./tests
